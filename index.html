@@ -417,7 +417,7 @@ async function loadFromSupabase() {
   setSyncStatus('syncing', 'Loading...');
   try {
     const [rows, companies, titleVal, subtitleVal, colNamesVal] = await Promise.all([
-      sbGet('links', 'order=sort_order.asc,created_at.asc'),
+      sbGet('links', 'order=sort_order.asc'),
       sbGet('companies', 'order=name.asc'),
       sbGetSetting('title'),
       sbGetSetting('subtitle'),
