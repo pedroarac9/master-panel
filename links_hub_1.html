@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Links Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #141417;
+    --surface2: #1c1c21;
+    --surface3: #242429;
+    --border: #2a2a30;
+    --border-hover: #44444d;
+    --accent: #b8f060;
+    --accent-dim: rgba(184,240,96,0.12);
+    --accent-dim2: rgba(184,240,96,0.06);
+    --text: #f0f0f4;
+    --text-muted: #7a7a88;
+    --text-dim: #4a4a58;
+    --danger: #ff5555;
+    --blue: #60a8f0;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Syne', sans-serif;
+    --radius: 8px;
+    --radius-lg: 14px;
+    --theme-transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+
+  :root.light {
+    --bg: #f5f5f0;
+    --surface: #ffffff;
+    --surface2: #efefea;
+    --surface3: #e5e5e0;
+    --border: #d8d8d0;
+    --border-hover: #b0b0a8;
+    --accent: #5a9e00;
+    --accent-dim: rgba(90,158,0,0.10);
+    --accent-dim2: rgba(90,158,0,0.05);
+    --text: #1a1a1f;
+    --text-muted: #555560;
+    --text-dim: #9a9aa8;
+    --danger: #cc2222;
+    --blue: #1a6ec0;
+  }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+  }
+  .theme-toggle:hover { border-color: var(--border-hover); color: var(--text); background: var(--surface3); }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    padding: 0;
+    transition: var(--theme-transition);
+  }
+
+  /* HEADER */
+  .header {
+    padding: 32px 40px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-left { display: flex; flex-direction: column; gap: 6px; }
+
+  .title-wrap { display: flex; align-items: center; gap: 12px; }
+
+  .title {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    padding: 0;
+    outline: none;
+  }
+  .title:hover { color: var(--accent); }
+
+  .title-input {
+    font-family: var(--sans);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--accent);
+    outline: none;
+    width: 260px;
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .header-actions { display: flex; gap: 10px; align-items: center; }
+
+  /* BUTTONS */
+  .btn {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .btn-accent {
+    background: var(--accent);
+    color: #0a0a0c;
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+  .btn-accent:hover { background: var(--accent); filter: brightness(1.1); border-color: var(--accent); color: #0a0a0c; }
+
+  .btn-ghost {
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-dim);
+  }
+  .btn-ghost:hover { color: var(--text-muted); background: var(--surface2); }
+
+  .btn-danger {
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-dim);
+  }
+  .btn-danger:hover { color: var(--danger); background: rgba(255,85,85,0.08); border-color: rgba(255,85,85,0.2); }
+
+  .btn-sm {
+    font-size: 11px;
+    padding: 5px 10px;
+    gap: 4px;
+  }
+
+  .btn-icon {
+    padding: 6px;
+    width: 28px;
+    height: 28px;
+    justify-content: center;
+  }
+
+  /* SEARCH + FILTER */
+  .toolbar {
+    padding: 16px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: var(--bg);
+    flex-wrap: wrap;
+  }
+
+  .search-wrap {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+  }
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px 8px 34px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus { border-color: var(--border-hover); }
+  .search-input::placeholder { color: var(--text-dim); }
+
+  .filter-select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .filter-select:focus { border-color: var(--border-hover); }
+
+  .count-badge {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  /* TABLE */
+  .table-wrap {
+    padding: 24px 40px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+  }
+
+  /* COLUMN HEADERS */
+  thead tr {
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  th .th-inner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  th .col-label {
+    cursor: pointer;
+    transition: color 0.15s;
+    border-bottom: 1px dashed transparent;
+  }
+  th .col-label:hover { color: var(--text-muted); border-bottom-color: var(--text-dim); }
+
+  th .col-label-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    outline: none;
+    width: 100px;
+  }
+
+  th.col-url { width: 180px; }
+  th.col-company { width: 160px; }
+  th.col-actions { width: 80px; text-align: right; }
+
+  /* TABLE ROWS */
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  tbody tr:hover { background: var(--accent-dim2); }
+  tbody tr.editing-row { background: var(--surface2); }
+
+  td {
+    padding: 14px 14px;
+    font-size: 13px;
+    vertical-align: middle;
+  }
+
+  /* INLINE EDITABLE CELLS */
+  .cell-text {
+    color: var(--text);
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 2px 4px;
+    transition: background 0.1s;
+    display: inline-block;
+    min-width: 60px;
+  }
+  .cell-text:hover { background: var(--surface3); }
+  .cell-text.empty { color: var(--text-dim); font-style: italic; }
+
+  .cell-input, .cell-textarea {
+    background: var(--surface3);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 4px 8px;
+    outline: none;
+    width: 100%;
+    resize: none;
+  }
+  .cell-textarea { min-height: 60px; resize: vertical; }
+
+  /* URL CELL */
+  .url-cell { display: flex; align-items: center; gap: 6px; }
+  .url-hidden { color: var(--text-dim); font-size: 12px; letter-spacing: 0.05em; }
+  .url-visible {
+    color: var(--blue);
+    font-size: 12px;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .url-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+  /* COMPANY BADGE */
+  .company-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--surface3);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  .company-badge:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .company-select {
+    background: var(--surface3);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 8px;
+    outline: none;
+    max-width: 160px;
+  }
+
+  /* ACTIONS */
+  td.col-actions { text-align: right; }
+  .row-actions { display: flex; gap: 4px; justify-content: flex-end; opacity: 0; transition: opacity 0.15s; }
+  tr:hover .row-actions { opacity: 1; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-dim);
+  }
+  .empty-state .empty-icon { font-size: 32px; margin-bottom: 12px; opacity: 0.4; }
+  .empty-state p { font-size: 13px; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    width: 480px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  }
+
+  .modal-title {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  .modal-section { margin-bottom: 20px; }
+  .modal-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .company-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+
+  .company-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .company-item-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+  }
+  .company-item-input:focus { color: var(--accent); }
+
+  .company-color-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .color-picker {
+    width: 28px; height: 28px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+    background: transparent;
+  }
+
+  .modal-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface3);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transform: translateY(60px);
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+  /* ADD ROW */
+  .add-row-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    width: 100%;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-top: 8px;
+  }
+  .add-row-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim2); }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 8px 0; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .header { padding: 20px; }
+    .toolbar { padding: 12px 20px; }
+    .table-wrap { padding: 16px 20px; }
+  }
+
+  /* COPY FLASH */
+  @keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+  .flash { animation: flash 0.3s ease; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="dot"></span><span id="toast-msg">Copied!</span></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="title-wrap">
+      <span class="title" id="hub-title" onclick="editTitle()">Links Hub</span>
+      <input class="title-input" id="hub-title-input" style="display:none" onblur="saveTitle()" onkeydown="if(event.key==='Enter')saveTitle()">
+    </div>
+    <div class="subtitle" id="hub-subtitle-display" onclick="editSubtitle()" style="cursor:pointer">Click to add a description...</div>
+    <input class="modal-input" id="hub-subtitle-input" style="display:none;max-width:340px;font-size:11px;padding:4px 8px;margin-top:2px" onblur="saveSubtitle()" onkeydown="if(event.key==='Enter')saveSubtitle()">
+  </div>
+  <div class="header-actions">
+    <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
+    <button class="btn" onclick="openCompanyManager()">⚙ Companies</button>
+    <button class="btn btn-accent" onclick="addNewRow()">+ Add Link</button>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input class="search-input" id="search-input" placeholder="Search links..." oninput="filterTable()">
+  </div>
+  <select class="filter-select" id="filter-company" onchange="filterTable()">
+    <option value="">All companies</option>
+  </select>
+  <span class="count-badge" id="row-count">0 links</span>
+</div>
+
+<!-- TABLE -->
+<div class="table-wrap">
+  <table id="links-table">
+    <thead>
+      <tr>
+        <th><div class="th-inner"><span class="col-label" id="col-name-label" ondblclick="editColName('col-name')">Project Name</span></div></th>
+        <th class="col-url"><div class="th-inner"><span class="col-label" id="col-url-label" ondblclick="editColName('col-url')">URL</span></div></th>
+        <th><div class="th-inner"><span class="col-label" id="col-desc-label" ondblclick="editColName('col-desc')">Description</span></div></th>
+        <th class="col-company"><div class="th-inner"><span class="col-label" id="col-company-label" ondblclick="editColName('col-company')">Company</span></div></th>
+        <th class="col-actions"></th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+  <button class="add-row-btn" onclick="addNewRow()">＋ Add new link</button>
+</div>
+
+<!-- COMPANY MANAGER MODAL -->
+<div class="modal-overlay" id="company-modal">
+  <div class="modal">
+    <div class="modal-title">⚙ Manage Companies</div>
+    <div class="modal-section">
+      <div class="modal-label">Company List</div>
+      <div class="company-list" id="company-list-ui"></div>
+      <button class="btn btn-sm" onclick="addCompany()">+ Add company</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeCompanyManager()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let state = {
+  title: 'Links Hub',
+  subtitle: '',
+  colNames: {
+    'col-name': 'Project Name',
+    'col-url': 'URL',
+    'col-desc': 'Description',
+    'col-company': 'Company'
+  },
+  companies: [
+    { id: 'wildbird', name: 'Wildbird Chiro', color: '#b8f060' },
+    { id: 'monstera', name: 'Monstera Practice Co', color: '#60d8f0' },
+    { id: 'personal', name: 'Personal', color: '#f0a860' },
+  ],
+  rows: [
+    { id: uid(), name: 'GoHighLevel CRM', url: 'https://app.gohighlevel.com', desc: 'CRM and marketing automation platform', company: 'wildbird', urlVisible: false },
+    { id: uid(), name: 'ChiroTouch', url: 'https://chirotouch.com', desc: 'Practice management software', company: 'wildbird', urlVisible: false },
+    { id: uid(), name: 'Notion Workspace', url: 'https://notion.so', desc: 'Project tracking and task management', company: 'personal', urlVisible: false },
+    { id: uid(), name: 'Lovable', url: 'https://lovable.dev', desc: 'Website builder for Monstera project', company: 'monstera', urlVisible: false },
+  ]
+};
+
+function uid() {
+  return Math.random().toString(36).slice(2,10);
+}
+
+// ─── PERSISTENCE ─────────────────────────────────────────────────────────────
+function save() {
+  try { localStorage.setItem('links_hub', JSON.stringify(state)); } catch(e) {}
+}
+
+function load() {
+  try {
+    const s = localStorage.getItem('links_hub');
+    if (s) state = JSON.parse(s);
+  } catch(e) {}
+}
+
+// ─── TITLE ───────────────────────────────────────────────────────────────────
+function editTitle() {
+  const t = document.getElementById('hub-title');
+  const i = document.getElementById('hub-title-input');
+  t.style.display = 'none';
+  i.style.display = '';
+  i.value = state.title;
+  i.focus(); i.select();
+}
+function saveTitle() {
+  const i = document.getElementById('hub-title-input');
+  state.title = i.value.trim() || 'Links Hub';
+  document.getElementById('hub-title').textContent = state.title;
+  document.getElementById('hub-title').style.display = '';
+  i.style.display = 'none';
+  document.title = state.title;
+  save();
+}
+
+function editSubtitle() {
+  const d = document.getElementById('hub-subtitle-display');
+  const i = document.getElementById('hub-subtitle-input');
+  d.style.display = 'none';
+  i.style.display = '';
+  i.value = state.subtitle;
+  i.focus();
+}
+function saveSubtitle() {
+  const i = document.getElementById('hub-subtitle-input');
+  state.subtitle = i.value.trim();
+  const d = document.getElementById('hub-subtitle-display');
+  d.textContent = state.subtitle || 'Click to add a description...';
+  d.style.display = '';
+  i.style.display = 'none';
+  save();
+}
+
+// ─── COLUMN NAMES ─────────────────────────────────────────────────────────────
+function editColName(key) {
+  const el = document.getElementById(key + '-label');
+  const input = document.createElement('input');
+  input.className = 'col-label-input';
+  input.value = state.colNames[key];
+  input.onblur = () => saveColName(key, input);
+  input.onkeydown = (e) => { if (e.key === 'Enter') saveColName(key, input); };
+  el.replaceWith(input);
+  input.focus(); input.select();
+}
+
+function saveColName(key, input) {
+  state.colNames[key] = input.value.trim() || state.colNames[key];
+  const span = document.createElement('span');
+  span.className = 'col-label';
+  span.id = key + '-label';
+  span.textContent = state.colNames[key];
+  span.ondblclick = () => editColName(key);
+  input.replaceWith(span);
+  save();
+}
+
+// ─── COMPANIES ───────────────────────────────────────────────────────────────
+function getCompany(id) {
+  return state.companies.find(c => c.id === id) || null;
+}
+
+function openCompanyManager() {
+  renderCompanyList();
+  document.getElementById('company-modal').classList.add('open');
+}
+
+function closeCompanyManager() {
+  document.getElementById('company-modal').classList.remove('open');
+  renderTable();
+  updateFilterDropdown();
+  save();
+}
+
+function renderCompanyList() {
+  const ul = document.getElementById('company-list-ui');
+  ul.innerHTML = '';
+  state.companies.forEach((c, idx) => {
+    const item = document.createElement('div');
+    item.className = 'company-item';
+    item.innerHTML = `
+      <span class="company-color-dot" style="background:${c.color}"></span>
+      <input class="company-item-input" value="${escHtml(c.name)}"
+        oninput="state.companies[${idx}].name = this.value"
+        onblur="save()">
+      <input type="color" class="color-picker" value="${c.color}"
+        oninput="state.companies[${idx}].color = this.value; this.previousElementSibling.previousElementSibling.style.background = this.value">
+      <button class="btn btn-icon btn-danger" onclick="removeCompany('${c.id}')" title="Remove">✕</button>
+    `;
+    ul.appendChild(item);
+  });
+}
+
+function addCompany() {
+  const newC = { id: uid(), name: 'New Company', color: '#' + Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0') };
+  state.companies.push(newC);
+  renderCompanyList();
+  save();
+}
+
+function removeCompany(id) {
+  state.companies = state.companies.filter(c => c.id !== id);
+  // clear from rows
+  state.rows.forEach(r => { if (r.company === id) r.company = ''; });
+  renderCompanyList();
+  save();
+}
+
+function updateFilterDropdown() {
+  const sel = document.getElementById('filter-company');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">All companies</option>';
+  state.companies.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.name;
+    sel.appendChild(opt);
+  });
+  sel.value = current;
+}
+
+// ─── TABLE RENDER ─────────────────────────────────────────────────────────────
+function renderTable(filter = '') {
+  const tbody = document.getElementById('table-body');
+  const compFilter = document.getElementById('filter-company').value;
+  tbody.innerHTML = '';
+
+  let visible = state.rows.filter(r => {
+    const q = filter.toLowerCase();
+    const matchQ = !q || r.name.toLowerCase().includes(q) || r.desc.toLowerCase().includes(q) || r.url.toLowerCase().includes(q);
+    const comp = getCompany(r.company);
+    const matchC = !compFilter || r.company === compFilter;
+    return matchQ && matchC;
+  });
+
+  document.getElementById('row-count').textContent = visible.length + ' link' + (visible.length !== 1 ? 's' : '');
+
+  if (visible.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">⛓</div><p>No links found. Add one above!</p></div></td></tr>`;
+    return;
+  }
+
+  visible.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + row.id;
+    tr.innerHTML = buildRowHTML(row);
+    tbody.appendChild(tr);
+  });
+}
+
+function buildRowHTML(row) {
+  const comp = getCompany(row.company);
+  const compBadge = comp
+    ? `<span class="company-badge" style="border-color:${comp.color}22;background:${comp.color}11;color:${comp.color}" onclick="editCompanyCell('${row.id}')">
+        <span style="width:6px;height:6px;border-radius:50%;background:${comp.color};display:inline-block;flex-shrink:0"></span>
+        ${escHtml(comp.name)}
+       </span>`
+    : `<span class="company-badge" onclick="editCompanyCell('${row.id}')">— assign</span>`;
+
+  const urlContent = row.urlVisible
+    ? `<span class="url-visible" title="${escHtml(row.url)}">${escHtml(row.url)}</span>
+       <div class="url-actions">
+         <button class="btn btn-icon btn-ghost btn-sm" title="Hide URL" onclick="toggleUrl('${row.id}')">◉</button>
+         <button class="btn btn-icon btn-ghost btn-sm" title="Copy URL" onclick="copyUrl('${row.id}')">⎘</button>
+       </div>`
+    : `<span class="url-hidden">••••••••</span>
+       <div class="url-actions">
+         <button class="btn btn-icon btn-ghost btn-sm" title="Reveal URL" onclick="toggleUrl('${row.id}')">👁</button>
+         <button class="btn btn-icon btn-ghost btn-sm" title="Copy URL" onclick="copyUrl('${row.id}')">⎘</button>
+       </div>`;
+
+  return `
+    <td onclick="editCell('${row.id}','name',this)">
+      <span class="cell-text ${!row.name?'empty':''}">${escHtml(row.name) || 'Click to add...'}</span>
+    </td>
+    <td>
+      <div class="url-cell" id="url-cell-${row.id}">
+        ${urlContent}
+      </div>
+    </td>
+    <td onclick="editCell('${row.id}','desc',this)">
+      <span class="cell-text ${!row.desc?'empty':''}">${escHtml(row.desc) || 'Click to add...'}</span>
+    </td>
+    <td id="company-cell-${row.id}">${compBadge}</td>
+    <td class="col-actions">
+      <div class="row-actions">
+        <button class="btn btn-icon btn-ghost btn-sm" title="Open URL" onclick="openUrl('${row.id}')">↗</button>
+        <button class="btn btn-icon btn-danger btn-sm" title="Delete" onclick="deleteRow('${row.id}')">✕</button>
+      </div>
+    </td>
+  `;
+}
+
+// ─── CELL EDITING ─────────────────────────────────────────────────────────────
+function editCell(rowId, field, tdEl) {
+  const row = state.rows.find(r => r.id === rowId);
+  if (!row) return;
+  const isDesc = field === 'desc';
+  const el = isDesc ? document.createElement('textarea') : document.createElement('input');
+  el.className = isDesc ? 'cell-textarea' : 'cell-input';
+  el.value = row[field];
+  el.onclick = e => e.stopPropagation();
+  el.onblur = () => {
+    row[field] = el.value.trim();
+    save();
+    renderTable(document.getElementById('search-input').value);
+  };
+  el.onkeydown = e => {
+    if (e.key === 'Enter' && !isDesc) { e.preventDefault(); el.blur(); }
+    if (e.key === 'Escape') { el.value = row[field]; el.blur(); }
+  };
+  tdEl.innerHTML = '';
+  tdEl.appendChild(el);
+  el.focus();
+  if (!isDesc) el.select();
+}
+
+function editCompanyCell(rowId) {
+  const row = state.rows.find(r => r.id === rowId);
+  if (!row) return;
+  const td = document.getElementById('company-cell-' + rowId);
+  const sel = document.createElement('select');
+  sel.className = 'company-select';
+  sel.innerHTML = '<option value="">— none —</option>';
+  state.companies.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.name;
+    if (c.id === row.company) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  sel.onchange = () => {
+    row.company = sel.value;
+    save();
+    renderTable(document.getElementById('search-input').value);
+  };
+  sel.onblur = () => renderTable(document.getElementById('search-input').value);
+  td.innerHTML = '';
+  td.appendChild(sel);
+  sel.focus();
+}
+
+// ─── URL ACTIONS ─────────────────────────────────────────────────────────────
+function toggleUrl(rowId) {
+  const row = state.rows.find(r => r.id === rowId);
+  if (!row) return;
+  // open inline edit if url is empty
+  if (!row.url && !row.urlVisible) {
+    editUrlInline(rowId); return;
+  }
+  row.urlVisible = !row.urlVisible;
+  const cell = document.getElementById('url-cell-' + rowId);
+  if (cell) cell.innerHTML = buildUrlCellContent(row);
+}
+
+function buildUrlCellContent(row) {
+  if (row.urlVisible) {
+    return `<span class="url-visible" title="${escHtml(row.url)}">${escHtml(row.url)}</span>
+            <div class="url-actions">
+              <button class="btn btn-icon btn-ghost btn-sm" title="Hide URL" onclick="toggleUrl('${row.id}')">◉</button>
+              <button class="btn btn-icon btn-ghost btn-sm" title="Copy URL" onclick="copyUrl('${row.id}')">⎘</button>
+            </div>`;
+  }
+  return `<span class="url-hidden">••••••••</span>
+          <div class="url-actions">
+            <button class="btn btn-icon btn-ghost btn-sm" title="Reveal URL" onclick="toggleUrl('${row.id}')">👁</button>
+            <button class="btn btn-icon btn-ghost btn-sm" title="Copy URL" onclick="copyUrl('${row.id}')">⎘</button>
+          </div>`;
+}
+
+function editUrlInline(rowId) {
+  const row = state.rows.find(r => r.id === rowId);
+  if (!row) return;
+  const cell = document.getElementById('url-cell-' + rowId);
+  cell.innerHTML = '';
+  const inp = document.createElement('input');
+  inp.className = 'cell-input';
+  inp.value = row.url;
+  inp.placeholder = 'https://...';
+  inp.style.fontSize = '12px';
+  inp.onblur = () => {
+    row.url = inp.value.trim();
+    row.urlVisible = false;
+    save();
+    cell.innerHTML = buildUrlCellContent(row);
+  };
+  inp.onkeydown = e => { if (e.key === 'Enter') inp.blur(); };
+  cell.appendChild(inp);
+  inp.focus();
+}
+
+// Make URL cell also editable on dblclick when visible
+document.addEventListener('dblclick', e => {
+  const cell = e.target.closest('.url-visible');
+  if (!cell) return;
+  const urlCell = cell.closest('[id^="url-cell-"]');
+  if (!urlCell) return;
+  const rowId = urlCell.id.replace('url-cell-', '');
+  editUrlInline(rowId);
+});
+
+function copyUrl(rowId) {
+  const row = state.rows.find(r => r.id === rowId);
+  if (!row || !row.url) { showToast('No URL to copy'); return; }
+  navigator.clipboard.writeText(row.url).then(() => showToast('URL copied!')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = row.url;
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('URL copied!');
+  });
+}
+
+function openUrl(rowId) {
+  const row = state.rows.find(r => r.id === rowId);
+  if (!row || !row.url) { showToast('No URL set'); return; }
+  window.open(row.url, '_blank');
+}
+
+// ─── ROW MANAGEMENT ──────────────────────────────────────────────────────────
+function addNewRow() {
+  const row = { id: uid(), name: '', url: '', desc: '', company: '', urlVisible: false };
+  state.rows.unshift(row);
+  save();
+  renderTable(document.getElementById('search-input').value);
+  // focus name cell
+  setTimeout(() => {
+    const nameCell = document.querySelector(`#row-${row.id} td:first-child`);
+    if (nameCell) nameCell.click();
+  }, 50);
+}
+
+function deleteRow(rowId) {
+  state.rows = state.rows.filter(r => r.id !== rowId);
+  save();
+  renderTable(document.getElementById('search-input').value);
+}
+
+// ─── FILTER ───────────────────────────────────────────────────────────────────
+function filterTable() {
+  renderTable(document.getElementById('search-input').value);
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ─── THEME ────────────────────────────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  document.getElementById('theme-btn').textContent = isLight ? '🌑' : '🌙';
+  try { localStorage.setItem('links_hub_theme', isLight ? 'light' : 'dark'); } catch(e) {}
+}
+
+function applyTheme() {
+  try {
+    const saved = localStorage.getItem('links_hub_theme');
+    if (saved === 'light') {
+      document.documentElement.classList.add('light');
+      document.getElementById('theme-btn').textContent = '🌑';
+    }
+  } catch(e) {}
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+load();
+applyTheme();
+document.getElementById('hub-title').textContent = state.title;
+document.title = state.title;
+document.getElementById('hub-subtitle-display').textContent = state.subtitle || 'Click to add a description...';
+
+updateFilterDropdown();
+renderTable();
+
+// Close modal on overlay click
+document.getElementById('company-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeCompanyManager();
+});
+</script>
+</body>
+</html>
