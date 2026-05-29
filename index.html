@@ -326,7 +326,8 @@
   }
   .cell-text:hover { background: var(--surface3); }
   .cell-text.empty { color: var(--text-dim); font-style: italic; }
-  td:first-child .cell-text { font-size: 15px; }
+  td:first-child .cell-text, td:nth-child(3) .cell-text { font-size: 15px; }
+  td:nth-child(4) { font-size: 15px; }
 
   .cell-input, .cell-textarea {
     background: var(--surface3);
@@ -602,7 +603,7 @@
     </thead>
     <tbody id="table-body"></tbody>
   </table>
-  <button class="add-row-btn" onclick="addNewRow()">＋ Add new link</button>
+  <button class="add-row-btn" onclick="addNewRow()">＋ Add new project</button>
 </div>
 
 <!-- COMPANY MANAGER MODAL -->
@@ -999,6 +1000,7 @@ function addNewRow() {
 }
 
 function deleteRow(rowId) {
+  if (!confirm('Delete this project? This cannot be undone.')) return;
   state.rows = state.rows.filter(r => r.id !== rowId);
   save();
   renderTable(document.getElementById('search-input').value);
