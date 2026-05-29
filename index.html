@@ -163,11 +163,11 @@
   .btn-ghost:hover { color: var(--text-muted); background: var(--surface2); }
 
   .btn-danger {
-    background: transparent;
-    border-color: transparent;
-    color: var(--text-dim);
+    background: rgba(255,85,85,0.08);
+    border-color: rgba(255,85,85,0.25);
+    color: var(--danger);
   }
-  .btn-danger:hover { color: var(--danger); background: rgba(255,85,85,0.08); border-color: rgba(255,85,85,0.2); }
+  .btn-danger:hover { background: rgba(255,85,85,0.18); border-color: rgba(255,85,85,0.5); }
 
   .btn-sm {
     font-size: 11px;
@@ -177,8 +177,8 @@
 
   .btn-icon {
     padding: 6px;
-    width: 28px;
-    height: 28px;
+    width: 34px;
+    height: 34px;
     justify-content: center;
   }
 
@@ -387,8 +387,7 @@
 
   /* ACTIONS */
   td.col-actions { text-align: right; }
-  .row-actions { display: flex; gap: 4px; justify-content: flex-end; opacity: 0; transition: opacity 0.15s; }
-  tr:hover .row-actions { opacity: 1; }
+  .row-actions { display: flex; gap: 4px; justify-content: flex-end; }
 
   /* EMPTY STATE */
   .empty-state {
@@ -834,11 +833,13 @@ function buildRowHTML(row) {
        <div class="url-actions">
          <button class="btn btn-icon btn-ghost btn-sm" title="Hide URL" onclick="toggleUrl('${row.id}')">◉</button>
          <button class="btn btn-icon btn-ghost btn-sm" title="Copy URL" onclick="copyUrl('${row.id}')">⎘</button>
+         <button class="btn btn-icon btn-ghost btn-sm" title="Open URL" onclick="openUrl('${row.id}')">↗</button>
        </div>`
     : `<span class="url-hidden">••••••••</span>
        <div class="url-actions">
          <button class="btn btn-icon btn-ghost btn-sm" title="Reveal URL" onclick="toggleUrl('${row.id}')">👁</button>
          <button class="btn btn-icon btn-ghost btn-sm" title="Copy URL" onclick="copyUrl('${row.id}')">⎘</button>
+         <button class="btn btn-icon btn-ghost btn-sm" title="Open URL" onclick="openUrl('${row.id}')">↗</button>
        </div>`;
 
   return `
@@ -856,7 +857,6 @@ function buildRowHTML(row) {
     <td id="company-cell-${row.id}">${compBadge}</td>
     <td class="col-actions">
       <div class="row-actions">
-        <button class="btn btn-icon btn-ghost btn-sm" title="Open URL" onclick="openUrl('${row.id}')">↗</button>
         <button class="btn btn-icon btn-danger btn-sm" title="Delete" onclick="deleteRow('${row.id}')">✕</button>
       </div>
     </td>
@@ -931,12 +931,14 @@ function buildUrlCellContent(row) {
             <div class="url-actions">
               <button class="btn btn-icon btn-ghost btn-sm" title="Hide URL" onclick="toggleUrl('${row.id}')">◉</button>
               <button class="btn btn-icon btn-ghost btn-sm" title="Copy URL" onclick="copyUrl('${row.id}')">⎘</button>
+              <button class="btn btn-icon btn-ghost btn-sm" title="Open URL" onclick="openUrl('${row.id}')">↗</button>
             </div>`;
   }
   return `<span class="url-hidden">••••••••</span>
           <div class="url-actions">
             <button class="btn btn-icon btn-ghost btn-sm" title="Reveal URL" onclick="toggleUrl('${row.id}')">👁</button>
             <button class="btn btn-icon btn-ghost btn-sm" title="Copy URL" onclick="copyUrl('${row.id}')">⎘</button>
+            <button class="btn btn-icon btn-ghost btn-sm" title="Open URL" onclick="openUrl('${row.id}')">↗</button>
           </div>`;
 }
 
