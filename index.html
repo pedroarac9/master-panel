@@ -291,8 +291,9 @@
       <span id="sync-label">Connecting...</span>
     </div>
     <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌿</button>
-    <button class="btn" onclick="openCompanyManager()">⚙ Companies</button>
-    <button class="btn btn-accent" onclick="addNewRow()">+ Add project</button>
+    <button class="theme-toggle" id="lock-btn" onclick="toggleLock()" title="Unlock editing">🔒</button>
+    <button class="btn" id="btn-companies" onclick="openCompanyManager()" style="display:none">⚙ Companies</button>
+    <button class="btn btn-accent" id="btn-add-project" onclick="addNewRow()" style="display:none">+ Add project</button>
   </div>
 </div>
 
@@ -320,7 +321,7 @@
     </thead>
     <tbody id="table-body"></tbody>
   </table>
-  <button class="add-row-btn" onclick="addNewRow()">＋ Add new project</button>
+  <button class="add-row-btn" id="btn-add-row" onclick="addNewRow()" style="display:none">＋ Add new project</button>
 </div>
 
 <div class="modal-overlay" id="company-modal">
@@ -402,8 +403,34 @@ let state = {
   subtitle: '',
   colNames: { 'col-name': 'Project Name', 'col-url': 'URL', 'col-desc': 'Description', 'col-company': 'Company' },
   companies: [],
-  rows: []
+  rows: [],
+  unlocked: false
 };
+
+function toggleLock() {
+  if (state.unlocked) {
+    state.unlocked = false;
+    document.getElementById('lock-btn').textContent = '🔒';
+    document.getElementById('lock-btn').title = 'Unlock editing';
+    document.getElementById('btn-companies').style.display = 'none';
+    document.getElementById('btn-add-project').style.display = 'none';
+    document.getElementById('btn-add-row').style.display = 'none';
+    renderTable(document.getElementById('search-input').value);
+  } else {
+    const pw = prompt('Enter password to unlock editing:');
+    if (pw === 'wildbird2026') {
+      state.unlocked = true;
+      document.getElementById('lock-btn').textContent = '🔓';
+      document.getElementById('lock-btn').title = 'Lock editing';
+      document.getElementById('btn-companies').style.display = '';
+      document.getElementById('btn-add-project').style.display = '';
+      document.getElementById('btn-add-row').style.display = '';
+      renderTable(document.getElementById('search-input').value);
+    } else {
+      alert('Incorrect password');
+    }
+  }
+}
 
 function setSyncStatus(status, label) {
   const dot = document.getElementById('sync-dot');
@@ -457,6 +484,7 @@ async function loadFromSupabase() {
 
 // ─── TITLE ────────────────────────────────────────────────────────────────────
 function editTitle() {
+  if (!state.unlocked) return;
   const t = document.getElementById('hub-title');
   const i = document.getElementById('hub-title-input');
   t.style.display = 'none'; i.style.display = '';
@@ -473,6 +501,7 @@ async function saveTitle() {
 }
 
 function editSubtitle() {
+  if (!state.unlocked) return;
   const d = document.getElementById('hub-subtitle-display');
   const i = document.getElementById('hub-subtitle-input');
   d.style.display = 'none'; i.style.display = '';
@@ -510,7 +539,7 @@ async function saveColName(key, input) {
 // ─── COMPANIES ───────────────────────────────────────────────────────────────
 function getCompany(id) { return state.companies.find(c => c.id === id) || null; }
 
-function openCompanyManager() { renderCompanyList(); document.getElementById('company-modal').classList.add('open'); }
+function openCompanyManager() { if (!state.unlocked) return; renderCompanyList(); document.getElementById('company-modal').classList.add('open'); }
 
 async function closeCompanyManager() {
   document.getElementById('company-modal').classList.remove('open');
@@ -628,23 +657,24 @@ function buildRowHTML(row) {
        </div>`;
 
   return `
-    <td onclick="editCell('${row.id}','name',this)">
-      <span class="cell-text ${!row.name?'empty':''}">${escHtml(row.name) || 'Click to add...'}</span>
+    <td ${state.unlocked ? `onclick="editCell('${row.id}','name',this)"` : ''}>
+      <span class="cell-text ${!row.name?'empty':''}">${escHtml(row.name) || (state.unlocked ? 'Click to add...' : '')}</span>
     </td>
     <td><div class="url-cell" id="url-cell-${row.id}">${urlContent}</div></td>
-    <td onclick="editCell('${row.id}','desc',this)">
-      <span class="cell-text ${!row.desc?'empty':''}">${escHtml(row.desc) || 'Click to add...'}</span>
+    <td ${state.unlocked ? `onclick="editCell('${row.id}','desc',this)"` : ''}>
+      <span class="cell-text ${!row.desc?'empty':''}">${escHtml(row.desc) || (state.unlocked ? 'Click to add...' : '')}</span>
     </td>
     <td id="company-cell-${row.id}">${compBadge}</td>
     <td class="col-actions">
       <div class="row-actions">
-        <button class="btn btn-icon btn-danger btn-sm" title="Delete" onclick="deleteRow('${row.id}')">✕</button>
+        ${state.unlocked ? `<button class="btn btn-icon btn-danger btn-sm" title="Delete" onclick="deleteRow('${row.id}')">✕</button>` : ''}
       </div>
     </td>`;
 }
 
 // ─── CELL EDITING ─────────────────────────────────────────────────────────────
 function editCell(rowId, field, tdEl) {
+  if (!state.unlocked) return;
   const row = state.rows.find(r => r.id === rowId);
   if (!row) return;
   const isDesc = field === 'desc';
@@ -770,6 +800,7 @@ function openUrl(rowId) {
 
 // ─── ROW MANAGEMENT ──────────────────────────────────────────────────────────
 async function addNewRow() {
+  if (!state.unlocked) return;
   setSyncStatus('syncing', 'Saving...');
   try {
     const [created] = await sbPost('links', { name: '', url: '', description: '', company: '', sort_order: 0 });
@@ -785,6 +816,7 @@ async function addNewRow() {
 }
 
 async function deleteRow(rowId) {
+  if (!state.unlocked) return;
   if (!confirm('Delete this project? This cannot be undone.')) return;
   state.rows = state.rows.filter(r => r.id !== rowId);
   renderTable(document.getElementById('search-input').value);
